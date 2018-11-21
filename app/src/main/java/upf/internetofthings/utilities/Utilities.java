@@ -4,7 +4,7 @@ public class Utilities {
     public static final String TABLE_ITEM = "item";
     public static final String TABLE_ITEM_GROUP = "itemgroup";
     public static final String F_ID = "id";
-    public static final String F_DESCRIPTION = "decription";
+    public static final String F_DESCRIPTION = "description";
     public static final String F_TAG = "tag";
 
 

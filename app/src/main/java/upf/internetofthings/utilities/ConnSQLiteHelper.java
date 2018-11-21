@@ -16,12 +16,17 @@ public class ConnSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) throws SQLException {
         db.execSQL(Utilities.CREATE_TABLE_ITEM);
-        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (1,'Casco','000000000000000000000001')");
-        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (2,'Pantalon','000000000000000000000001')");
-        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (3,'Chaqueta','000000000000000000000001')");
-        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (4,'Manguera','000000000000000000000001')");
-
-
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (0,'Ball','000000000000000000000000')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (1,'Helmet','000000000000000000000001')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (2,'Pants','000000000000000000000002')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (3,'Jacket','000000000000000000000003')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (4,'Hose','000000000000000000000004')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (5,'Hola1','000000000000000000000005')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (6,'Hola2','000000000000000000000006')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (7,'Hola3','000000000000000000000007')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (8,'Hola4','000000000000000000000008')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (9,'Hola5','000000000000000000000009')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (10,'Hola6','000000000000000000000010')");
 
     }
 

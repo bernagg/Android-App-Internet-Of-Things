@@ -8,13 +8,15 @@ import android.view.View;
 import upf.internetofthings.utilities.ConnSQLiteHelper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    static ConnSQLiteHelper conn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ConnSQLiteHelper conn = new ConnSQLiteHelper(this, "bd_items", null, 1);
+        conn = new ConnSQLiteHelper(this, "bd_items", null, 4);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package upf.internetofthings;
 
 import android.app.ProgressDialog;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,15 +14,20 @@ import android.widget.Button;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import upf.internetofthings.utilities.ConnSQLiteHelper;
+import upf.internetofthings.utilities.Utilities;
+
 public class SyncActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static int INTERVAL = 2000; //2 minutes
+    private final static int INTERVAL = 5000; //2 minutes
     Handler mHandler = new Handler();
+
 
     Runnable mHandlerTask = new Runnable()
     {
@@ -93,6 +100,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                     con_device.getInputStream();
                     con_device.disconnect();
                 }
+                // List TAGs from RFID devices
                 NodeList epc_tag = null;
                 for (int i = 0; i < ids.getLength(); i++) {
                     id = ids.item(i).getTextContent();
@@ -105,10 +113,31 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                     DocumentBuilder db_device = dbf_device.newDocumentBuilder();
                     Document doc_device = db_device.parse(url_device_epc.openStream());
 
-
                     epc_tag = doc_device.getElementsByTagName("epc");
                 }
-                
+                if (epc_tag.getLength() > 0) {
+                    // Database query to check ids
+                    SQLiteDatabase db_sql = MainActivity.conn.getReadableDatabase();
+                    String[] params = new String[epc_tag.getLength()];
+                    String query_multiple_tag = "SELECT * FROM item WHERE tag IN (";
+
+                    for (int i = 0; i < epc_tag.getLength(); i++) {
+                            params[i] = epc_tag.item(i).getTextContent();
+                            // Check if we have at least more than one parameter
+                            if (i == epc_tag.getLength() - 1) {
+                                query_multiple_tag += ("\"" + params[i] +"\"");
+                            } else {
+                                query_multiple_tag += ("\"" + params[i] +"\",");
+                            }
+                    }
+                    query_multiple_tag += ")";
+                    Cursor cursor = db_sql.rawQuery(query_multiple_tag, null);
+
+                    while(cursor.moveToNext()) {
+                        Log.i("INFOOOOO PARAMS", cursor.getString(1));
+                        Log.i("INFOOOOO PARAMS", cursor.getString(2));
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 resp = e.getMessage();

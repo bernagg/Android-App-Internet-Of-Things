@@ -18,7 +18,7 @@ public class ConnSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(Utilities.CREATE_TABLE_ITEM);
         db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (1,'Casco','000000000000000000000001')");
         db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (2,'Pantalon','000000000000000000000001')");
-        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (3,'Guante','000000000000000000000001')");
+        db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (3,'Chaqueta','000000000000000000000001')");
         db.execSQL("INSERT INTO " + Utilities.TABLE_ITEM + " VALUES (4,'Manguera','000000000000000000000001')");
 
 

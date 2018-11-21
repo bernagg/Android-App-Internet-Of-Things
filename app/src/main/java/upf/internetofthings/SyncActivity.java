@@ -1,5 +1,6 @@
 package upf.internetofthings;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,19 @@ import upf.internetofthings.utilities.MyAsyncTask;
 
 public class SyncActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btn_run_synctask;
+    private final static int INTERVAL = 2000; //2 minutes
+    Handler mHandler = new Handler();
+
+    Runnable mHandlerTask = new Runnable()
+    {
+        @Override
+        public void run() {
+            MyAsyncTask runner = new MyAsyncTask();
+            runner.execute();
+            mHandler.postDelayed(mHandlerTask, INTERVAL);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +34,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
         btn_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyAsyncTask runner = new MyAsyncTask();
-                runner.execute();
+                mHandlerTask.run();
             }
         });
     }
@@ -29,5 +42,11 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(mHandlerTask);
     }
 }

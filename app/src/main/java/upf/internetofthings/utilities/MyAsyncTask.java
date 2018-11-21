@@ -2,6 +2,7 @@ package upf.internetofthings.utilities;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import org.w3c.dom.Document;
@@ -21,12 +22,16 @@ public class MyAsyncTask extends AsyncTask<String, Object, Object> {
 
     @Override
     protected Object doInBackground(String... params) {
+        resp = requestHttp();
+        return resp;
+    }
+
+    private Object requestHttp() {
         publishProgress("Connecting..."); // Calls onProgressUpdate()
         try {
             URL url = new URL("https://www.ara.cat/rss/esports/");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -41,7 +46,6 @@ public class MyAsyncTask extends AsyncTask<String, Object, Object> {
             e.printStackTrace();
             resp = e.getMessage();
         }
-        //return resp;
         return resp;
     }
 

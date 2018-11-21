@@ -74,7 +74,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
         private Object requestHttp() {
             publishProgress("Connecting..."); // Calls onProgressUpdate()
             try {
-                URL url = new URL("https://www.ara.cat/rss/esports/");
+                URL url = new URL("http://192.168.2.10:3161/devices/");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -82,9 +82,9 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                 Document doc = db.parse(url.openStream());
 
 
-                NodeList titles = doc.getElementsByTagName("title");
-                for (int i = 0; i < titles.getLength(); i++) {
-                    Log.i("INFOOOOOOOOOOOOOOOOOOOO", titles.item(i).getTextContent());
+                NodeList ids = doc.getElementsByTagName("id");
+                for (int i = 0; i < ids.getLength(); i++) {
+                    Log.i("INFOOOOOOOOOOOOOOOOOOOO", ids.item(i).getTextContent());
                 }
             } catch (Exception e) {
                 e.printStackTrace();

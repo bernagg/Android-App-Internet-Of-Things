@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -27,7 +28,7 @@ import upf.internetofthings.utilities.Utilities;
 public class SyncActivity extends AppCompatActivity implements View.OnClickListener {
     private final static int INTERVAL = 5000; //2 minutes
     Handler mHandler = new Handler();
-
+    View iv_helmet, iv_jacket, iv_hose, iv_pants;
 
     Runnable mHandlerTask = new Runnable()
     {
@@ -59,6 +60,12 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 mHandler.removeCallbacks(mHandlerTask);            }
         });
+
+        iv_helmet = (View) findViewById(R.id.iv_helmet);
+        iv_hose = (View) findViewById(R.id.iv_hose);
+        iv_jacket = (View) findViewById(R.id.iv_jacket);
+        iv_pants = (View) findViewById(R.id.iv_pants);
+
     }
 
     @Override
@@ -137,6 +144,12 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                         Log.i("INFOOOOO PARAMS", cursor.getString(1));
                         Log.i("INFOOOOO PARAMS", cursor.getString(2));
                     }
+                    SyncActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            iv_pants.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

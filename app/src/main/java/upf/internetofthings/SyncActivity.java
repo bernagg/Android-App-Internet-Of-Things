@@ -10,7 +10,6 @@ import android.widget.TextView;
 import upf.internetofthings.utilities.MyAsyncTask;
 
 public class SyncActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btn_run_synctask;
     private final static int INTERVAL = 2000; //2 minutes
     Handler mHandler = new Handler();
 
@@ -30,23 +29,24 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
 
-        Button btn_sync = (Button) findViewById(R.id.btn_run_synctask);
-        btn_sync.setOnClickListener(new View.OnClickListener() {
+        Button btn_run_sync = (Button) findViewById(R.id.btn_run_synctask);
+        btn_run_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mHandlerTask.run();
             }
+        });
+
+        Button btn_stop_sync = (Button) findViewById(R.id.btn_stop_synctask);
+        btn_stop_sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHandler.removeCallbacks(mHandlerTask);            }
         });
     }
 
     @Override
     public void onClick(View v) {
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mHandler.removeCallbacks(mHandlerTask);
     }
 }

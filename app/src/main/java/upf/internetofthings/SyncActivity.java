@@ -83,9 +83,32 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 NodeList ids = doc.getElementsByTagName("id");
+                String id;
+                // Turn on every RFID antena
                 for (int i = 0; i < ids.getLength(); i++) {
-                    Log.i("INFOOOOOOOOOOOOOOOOOOOO", ids.item(i).getTextContent());
+                    id = ids.item(i).getTextContent();
+                    String url_path = "http://192.168.2.10:3161/devices/" + id + "/start/";
+                    URL url_device = new URL(url_path);
+                    HttpURLConnection con_device = (HttpURLConnection) url_device.openConnection();
+                    con_device.getInputStream();
+                    con_device.disconnect();
                 }
+                NodeList epc_tag = null;
+                for (int i = 0; i < ids.getLength(); i++) {
+                    id = ids.item(i).getTextContent();
+                    String url_path_epc = "http://192.168.2.10:3161/devices/" + id + "/inventory/";
+                    URL url_device_epc = new URL(url_path_epc);
+                    HttpURLConnection con_device_epc = (HttpURLConnection) url_device_epc.openConnection();
+
+                    con_device_epc.setRequestMethod("GET");
+                    DocumentBuilderFactory dbf_device = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder db_device = dbf_device.newDocumentBuilder();
+                    Document doc_device = db_device.parse(url_device_epc.openStream());
+
+
+                    epc_tag = doc_device.getElementsByTagName("epc");
+                }
+                
             } catch (Exception e) {
                 e.printStackTrace();
                 resp = e.getMessage();

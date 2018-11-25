@@ -10,25 +10,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import upf.internetofthings.utilities.ConnSQLiteHelper;
-import upf.internetofthings.utilities.Utilities;
-
 public class SyncActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static int INTERVAL = 5000; //2 minutes
+    private final static int INTERVAL = 2000; //2 minutes
     Handler mHandler = new Handler();
     View iv_helmet, iv_jacket, iv_hose, iv_pants;
+    static boolean flag_iv_helmet, flag_iv_jacket, flag_iv_hose, flag_iv_pants;
+    static Cursor cursor;
 
     Runnable mHandlerTask = new Runnable()
     {
@@ -53,19 +50,24 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                 mHandlerTask.run();
             }
         });
-
         Button btn_stop_sync = (Button) findViewById(R.id.btn_stop_synctask);
-        btn_stop_sync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHandler.removeCallbacks(mHandlerTask);            }
-        });
 
         iv_helmet = (View) findViewById(R.id.iv_helmet);
         iv_hose = (View) findViewById(R.id.iv_hose);
         iv_jacket = (View) findViewById(R.id.iv_jacket);
         iv_pants = (View) findViewById(R.id.iv_pants);
 
+        btn_stop_sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHandler.removeCallbacks(mHandlerTask);
+                flag_iv_helmet = false;flag_iv_pants = false;flag_iv_jacket = false;flag_iv_hose = false;
+                iv_helmet.setVisibility(View.VISIBLE);
+                iv_jacket.setVisibility(View.VISIBLE);
+                iv_pants.setVisibility(View.VISIBLE);
+                iv_hose.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -106,7 +108,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                     HttpURLConnection con_device = (HttpURLConnection) url_device.openConnection();
                     con_device.getInputStream();
                     con_device.disconnect();
-                }
+            }
                 // List TAGs from RFID devices
                 NodeList epc_tag = null;
                 for (int i = 0; i < ids.getLength(); i++) {
@@ -138,17 +140,37 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                             }
                     }
                     query_multiple_tag += ")";
-                    Cursor cursor = db_sql.rawQuery(query_multiple_tag, null);
+                    cursor = db_sql.rawQuery(query_multiple_tag, null);
 
                     while(cursor.moveToNext()) {
+                        Log.i("INFOOOOO PARAMS", cursor.getString(0));
                         Log.i("INFOOOOO PARAMS", cursor.getString(1));
                         Log.i("INFOOOOO PARAMS", cursor.getString(2));
-                    }
-                    SyncActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            iv_pants.setVisibility(View.INVISIBLE);
+                        Integer column_id = cursor.getInt(0);
+                        if (column_id == 1) {
+                            flag_iv_helmet = true;
+                        } else if (column_id == 2) {
+                            flag_iv_pants = true;
+                        } else if (column_id == 3) {
+                            flag_iv_jacket = true;
+                        } else if (column_id == 4){
+                            flag_iv_hose = true;
                         }
-                    });
+                        SyncActivity.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                if (flag_iv_helmet)
+                                    iv_helmet.setVisibility(View.INVISIBLE);
+                                if (flag_iv_pants)
+                                    iv_pants.setVisibility(View.INVISIBLE);
+                                if (flag_iv_jacket)
+                                    iv_jacket.setVisibility(View.INVISIBLE);
+                                if (flag_iv_hose)
+                                    iv_hose.setVisibility(View.INVISIBLE);
+
+                            }
+                        });
+                    }
+
 
                 }
             } catch (Exception e) {

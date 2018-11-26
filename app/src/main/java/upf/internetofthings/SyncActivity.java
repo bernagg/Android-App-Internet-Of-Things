@@ -1,6 +1,7 @@
 package upf.internetofthings;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -166,7 +167,16 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                                     iv_jacket.setVisibility(View.INVISIBLE);
                                 if (flag_iv_hose)
                                     iv_hose.setVisibility(View.INVISIBLE);
-
+                                if (flag_iv_jacket && flag_iv_pants && flag_iv_hose && flag_iv_helmet ) {
+                                    Intent intent = new Intent(SyncActivity.this, ConfirmActivity.class);
+                                    mHandler.removeCallbacks(mHandlerTask);
+                                    flag_iv_helmet = false;flag_iv_pants = false;flag_iv_jacket = false;flag_iv_hose = false;
+                                    iv_helmet.setVisibility(View.VISIBLE);
+                                    iv_jacket.setVisibility(View.VISIBLE);
+                                    iv_pants.setVisibility(View.VISIBLE);
+                                    iv_hose.setVisibility(View.VISIBLE);
+                                    startActivity(intent);
+                                }
                             }
                         });
                     }

@@ -22,12 +22,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class SyncActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static int INTERVAL = 2000; //2 minutes
+    private final static int INTERVAL = 2000; // 2 minutes
     Handler mHandler = new Handler();
     View iv_helmet, iv_jacket, iv_hose, iv_pants;
     static boolean flag_iv_helmet, flag_iv_jacket, flag_iv_hose, flag_iv_pants;
     static Cursor cursor;
 
+    // AsyncTask running every 2 minutes (check INTERVAL static int)
     Runnable mHandlerTask = new Runnable()
     {
         @Override
@@ -44,6 +45,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
 
+        // Set AsyncTask to Button Run.
         Button btn_run_sync = (Button) findViewById(R.id.btn_run_synctask);
         btn_run_sync.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,13 +53,15 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                 mHandlerTask.run();
             }
         });
-        Button btn_stop_sync = (Button) findViewById(R.id.btn_stop_synctask);
 
         iv_helmet = (View) findViewById(R.id.iv_helmet);
         iv_hose = (View) findViewById(R.id.iv_hose);
         iv_jacket = (View) findViewById(R.id.iv_jacket);
         iv_pants = (View) findViewById(R.id.iv_pants);
 
+        // Set stop button, flags helps to know which elements have been checked.
+        // This button reset all the possibilities and stops AsyncTask.
+        Button btn_stop_sync = (Button) findViewById(R.id.btn_stop_synctask);
         btn_stop_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +105,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
 
                 NodeList ids = doc.getElementsByTagName("id");
                 String id;
-                // Turn on every RFID antena
+                // Turn on every RFID antenna (Check if the properly IP is assigned)
                 for (int i = 0; i < ids.getLength(); i++) {
                     id = ids.item(i).getTextContent();
                     String url_path = "http://192.168.2.10:3161/devices/" + id + "/start/";
@@ -110,7 +114,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                     con_device.getInputStream();
                     con_device.disconnect();
             }
-                // List TAGs from RFID devices
+                // List TAGs from RFID devices (Check if the properly IP is assigned)
                 NodeList epc_tag = null;
                 for (int i = 0; i < ids.getLength(); i++) {
                     id = ids.item(i).getTextContent();
@@ -131,6 +135,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                     String[] params = new String[epc_tag.getLength()];
                     String query_multiple_tag = "SELECT * FROM item WHERE tag IN (";
 
+                    // Building a SQL query through a String.
                     for (int i = 0; i < epc_tag.getLength(); i++) {
                             params[i] = epc_tag.item(i).getTextContent();
                             // Check if we have at least more than one parameter
@@ -143,6 +148,7 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                     query_multiple_tag += ")";
                     cursor = db_sql.rawQuery(query_multiple_tag, null);
 
+                    // Iterate SQL cursor.
                     while(cursor.moveToNext()) {
                         Log.i("INFOOOOO PARAMS", cursor.getString(0));
                         Log.i("INFOOOOO PARAMS", cursor.getString(1));
@@ -157,6 +163,8 @@ public class SyncActivity extends AppCompatActivity implements View.OnClickListe
                         } else if (column_id == 4){
                             flag_iv_hose = true;
                         }
+                        // Check if some id has been found.
+                        // If all the ids have been found, reset flags and then run ConfirmActivity.
                         SyncActivity.this.runOnUiThread(new Runnable() {
                             public void run() {
                                 if (flag_iv_helmet)

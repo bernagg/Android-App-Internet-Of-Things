@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Database SQLite (Check ConnSQliteHelper in utilities folder)
         conn = new ConnSQLiteHelper(this, "bd_items", null, 4);
     }
 
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Intent intent = null;
         switch (v.getId()){
+            // Button to Activity Sync
             case R.id.btn_activity_sync:
                 intent = new Intent(MainActivity.this, SyncActivity.class);
                 break;
